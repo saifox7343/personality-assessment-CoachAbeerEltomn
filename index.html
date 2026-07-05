@@ -567,6 +567,56 @@
             .option-btn { width: 40px; height: 40px; }
             .options-group { padding-right: 0; justify-content: center; }
         }
+                .career-section {
+            background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+            border: 2px solid #a855f7;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .career-section h3 {
+            color: #7e22ce;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .career-category {
+            margin-bottom: 14px;
+        }
+        .career-category-title {
+            font-weight: 700;
+            color: #581c87;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .career-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .career-tag {
+            background: white;
+            color: #7e22ce;
+            border: 1px solid #d8b4fe;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .career-tag.highlight {
+            background: #a855f7;
+            color: white;
+            border-color: #a855f7;
+        }
+        .career-desc {
+            color: #6b21a8;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -611,6 +661,11 @@
                 <div class="strengths-list" id="strengthsList"></div>
                 <h3 style="color: #92400e; margin-top: 12px; margin-bottom: 8px; text-align: center; font-size: 0.95rem;">🌱 مجالات النمو والتطوير</h3>
                 <div class="growth-areas-list" id="growthAreasList"></div>
+            </div>
+
+            <div class="career-section" id="careerSection">
+                <h3>🎯 المجالات المقترحة لك</h3>
+                <div id="careerContent"></div>
             </div>
 
             <!-- Motivational Message -->
@@ -781,6 +836,49 @@
             }
         ];
 
+        const careerMap = {
+            extraversion: {
+                fields: ['التسويق والمبيعات', 'الإعلام والإذاعة', 'التدريس والتدريب', 'السياحة والضيافة', 'التمثيل والفنون'],
+                desc: 'أنت شخص اجتماعي وتحب التواصل — المجالات اللي بتعتمد على التفاعل مع الناس هتناسبك جداً'
+            },
+            emotional_stability: {
+                fields: ['الطب والتمريض', 'الطب النفسي', 'الاستشارات', 'الإدارة في الأزمات', 'العمليات الجراحية'],
+                desc: 'هدوءك وقدرتك على التعامل مع الضغط هتخليك متميز في المجالات اللي بتتطلب أعصاب قوية'
+            },
+            conscientiousness: {
+                fields: ['الهندسة', 'المحاسبة والمالية', 'القانون', 'البحث العلمي', 'إدارة المشاريع'],
+                desc: 'نظامك ودقتك وقدرتك على المثابرة هتخلك ناجح في المجالات اللي بتتطلب تركيز وتفاصيل'
+            },
+            openness: {
+                fields: ['التصميم الجرافيكي', 'البرمجة والتقنية', 'البحث والتطوير', 'الكتابة والإبداع', 'الهندسة المعمارية'],
+                desc: 'إبداعك وحبك للتجربة الجديدة هيفتحلك أبواب في مجالات مبتكرة ومتطورة'
+            },
+            agreeableness: {
+                fields: ['العمل الاجتماعي', 'التدريس', 'التمريض', 'الإرشاد الأسري', 'العلاقات العامة'],
+                desc: 'تعاطفك مع الآخرين ورغبتك في المساعدة هتخليك متميز في مجالات الخدمة والرعاية'
+            },
+            resilience: {
+                fields: ['ريادة الأعمال', 'الإدارة التنفيذية', 'الرياضة الاحترافية', 'العمل العسكري/الأمني', 'التجارة الدولية'],
+                desc: 'قدرتك على التعافي والتعلم من الأخطاء هتخلك قائد ناجح في أي مجال تحدياته عالية'
+            },
+            optimism: {
+                fields: ['ريادة الأعمال', 'التسويق', 'التحفيز والتنمية البشرية', 'السياسة والقيادة', 'الاستثمار'],
+                desc: 'تفاؤلك ونظرتك للمستقبل هتساعدك تنجح في مجالات بتتطلب رؤية وثقة'
+            },
+            social_skills: {
+                fields: ['العلاقات العامة', 'الموارد البشرية', 'التفاوض والوساطة', 'التدريس', 'الإدارة'],
+                desc: 'مهاراتك في التواصل وبناء العلاقات هتخليك ناجح في أي مجال بتشتغل فيه مع فريق'
+            },
+            self_awareness: {
+                fields: ['الكوتشينج والتوجيه', 'الاستشارات النفسية', 'القيادة', 'التأليف', 'التدريب'],
+                desc: 'فهمك لنفسك وقدرتك على التحكم في انفعالاتك هتخلك مرشد ممتاز للآخرين'
+            },
+            leadership: {
+                fields: ['الإدارة والقيادة', 'ريادة الأعمال', 'السياسة', 'الجيش والأمن', 'العمل الخيري'],
+                desc: 'مبادرتك وجرأتك وقدرتك على تحمل المسؤولية هتخليك قائد مولود'
+            }
+        };
+
         const answers = {};
         let currentResults = [];
 
@@ -880,6 +978,69 @@
             return { level: 'يحتاج تطوير', class: 'weak', desc: 'فرصة للنمو — ركّز على تحسينه خطوة بخطوة.' };
         }
 
+        function getCareerRecommendations(results) {
+            const strongDims = results.filter(r => r.score >= 16).sort((a, b) => b.score - a.score);
+            const moderateDims = results.filter(r => r.score >= 11 && r.score < 16);
+            
+            let html = '';
+            
+            if (strongDims.length > 0) {
+                html += '<div class="career-category">' +
+                    '<div class="career-category-title">🏆 بناءً على نقاط قوتك القوية:</div>' +
+                    '<div class="career-tags">';
+                
+                const allFields = [];
+                strongDims.slice(0, 3).forEach(d => {
+                    const career = careerMap[d.id];
+                    if (career) {
+                        career.fields.forEach(f => {
+                            if (!allFields.includes(f)) allFields.push(f);
+                        });
+                    }
+                });
+                
+                allFields.slice(0, 8).forEach((f, i) => {
+                    html += '<span class="career-tag ' + (i < 3 ? 'highlight' : '') + '">' + f + '</span>';
+                });
+                
+                html += '</div></div>';
+                
+                const topDim = strongDims[0];
+                const career = careerMap[topDim.id];
+                if (career) {
+                    html += '<div class="career-desc">💡 ' + career.desc + '</div>';
+                }
+            }
+            
+            if (moderateDims.length > 0) {
+                html += '<div class="career-category" style="margin-top:12px;">' +
+                    '<div class="career-category-title" style="color:#92400e;">📈 مجالات تكميلية (يمكن تطويرها):</div>' +
+                    '<div class="career-tags">';
+                
+                const moderateFields = [];
+                moderateDims.slice(0, 2).forEach(d => {
+                    const career = careerMap[d.id];
+                    if (career) {
+                        career.fields.slice(0, 2).forEach(f => {
+                            if (!moderateFields.includes(f)) moderateFields.push(f);
+                        });
+                    }
+                });
+                
+                moderateFields.forEach(f => {
+                    html += '<span class="career-tag" style="background:#fef3c7;color:#92400e;border-color:#fcd34d;">' + f + '</span>';
+                });
+                
+                html += '</div></div>';
+            }
+            
+            html += '<div class="career-desc" style="margin-top:12px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);color:#5b21b6;">' +
+                '🎯 <strong>نصيحة مهمة:</strong> اختيار المسار الوظيفي مش بيعتمد على نقطة قوة واحدة بس. الأفضل تجمع بين <strong>نقاط قوتك المتعددة</strong> وتختار مجال يستفيد من أكتر من مهارة عندك.' +
+            '</div>';
+            
+            return html;
+        }
+
         function getMotivationalMessage(strongest, weakest, totalStrong) {
             if (totalStrong >= 5) {
                 return `🌟 أنت شخص متميز بقدرات قوية متعددة! عندك ${totalStrong} نقاط قوة واضحة. استثمر فيها وشارك خبراتك مع غيرك. في نفس الوقت، متنساش تشتغل على مجالات النمو — حتى الأبطال بيستمروا في التعلم!`;
@@ -954,6 +1115,9 @@
             }, 100);
 
             renderRadarChart(results);
+
+            const careerHtml = getCareerRecommendations(results);
+            document.getElementbyId('careerContent').innerHtml = careerHtml;
 
             const grid = document.getElementById('resultsGrid');
             grid.innerHTML = '';
